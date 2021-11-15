@@ -1,14 +1,15 @@
 ﻿#include <iostream>
-#include <stdio.h>
+#include <complex>
 
 using namespace std;
 
+template <class T>
 class vector
 {
 private:
 
 	size_t _size;
-	double* _data;
+	T* _data;
 
 public:
 
@@ -22,7 +23,7 @@ public:
 		};
 	};
 
-	vector(size_t size, double data)
+	vector(size_t size, T data)
 	{
 		_size = size;
 		if (_size < 0)
@@ -39,7 +40,7 @@ public:
 		delete[] _data;
 	};
 
-	double& operator[](size_t ind)
+	T& operator[](size_t ind)
 	{
 		if (ind >= _size || ind < 0)
 			throw std::logic_error("Invalid index");
@@ -96,7 +97,7 @@ public:
 		return dif;
 	};
 
-	double operator*(const vector& v1)
+	T operator*(const vector& v1)
 	{
 		if (_size != v1._size)
 			throw "Can not mul2 vector!";
@@ -108,7 +109,7 @@ public:
 		return mul;
 	};
 
-	vector operator*(const double a)
+	vector operator*(const T a)
 	{
 		vector res(_size, 0);
 		for (size_t i = 0; i < _size; i++)
@@ -118,7 +119,7 @@ public:
 		return res;
 	};
 
-	vector operator/(const double data)
+	vector operator/(const T data)
 	{
 		if (data == 0)
 			throw("Error!");
@@ -130,7 +131,7 @@ public:
 		return res;
 	};
 
-	friend istream& operator>> (istream& is, vector& v)
+	template<class T> friend istream& operator>> (istream& is, vector<T>& v)
 	{
 
 		cout << "Size: ";
@@ -141,7 +142,7 @@ public:
 		return is;
 	};
 
-	friend ostream& operator<< (ostream& os, const vector& v)
+	template<class T> friend ostream& operator<< (ostream& os, const vector<T>& v)
 	{
 		os << "[ ";
 		for (size_t i = 0; i < v._size; i++)
