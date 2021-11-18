@@ -1,37 +1,36 @@
 ﻿#include <iostream>
+#include <stdio.h>
 #include <complex>
 
 using namespace std;
 
-template <class T>
+template <class T> 
 class vector
 {
-private:
-
 	size_t _size;
 	T* _data;
 
 public:
 
-	vector()
-	{
-		_size = 2;
-		_data = new double[_size];
-		for (size_t i = 0; i < _size; i++)
-		{
-			_data[i] = 0;
-		};
-	};
+	vector() : _data(nullptr), _size(0) {};
 
 	vector(size_t size, T data)
 	{
 		_size = size;
-		if (_size < 0)
-			throw("Can not negative size");
-		_data = new double[_size];
+		_data = new T[_size];
 		for (size_t i = 0; i < _size; i++)
 		{
 			_data[i] = data;
+		};
+	};
+
+	vector(const vector<T>& v)
+	{
+		_size = v._size;
+		_data = new T[_size];
+		for (size_t i = 0; i < _size; i++)
+		{
+			_data[i] = v._data[i];
 		};
 	};
 
@@ -42,17 +41,9 @@ public:
 
 	T& operator[](size_t ind)
 	{
-		if (ind >= _size || ind < 0)
+		if (ind >= _size)
 			throw std::logic_error("Invalid index");
 		return _data[ind];
-	};
-
-	vector(vector&& move) noexcept
-	{
-		_data = move._data;
-		_size = move._size;
-		move._data = nullptr;
-		move._size = 0;
 	};
 
 	vector& operator= (const vector& v)
@@ -61,7 +52,7 @@ public:
 			return (*this);
 		delete[]_data;
 		_size = v._size;
-		_data = new double[_size];
+		_data = new T[_size];
 		for (size_t i = 0; i < _size; i++)
 		{
 			_data[i] = v._data[i];
@@ -69,13 +60,13 @@ public:
 		return (*this);
 	};
 
-	vector operator+(const vector& v1)
+	vector operator+ (const vector<T>& v1) const
 	{
 		if (_size != v1._size)
 			throw("Can not sum2 vector!");
 		vector sum;
 		sum._size = _size;
-		sum._data = new double[_size];
+		sum._data = new T[_size];
 		for (size_t i = 0; i < _size; i++)
 		{
 			sum._data[i] = _data[i] + v1._data[i];
@@ -83,13 +74,13 @@ public:
 		return sum;
 	};
 
-	vector operator-(const vector& v1)
+	vector operator- (const vector& v1) const
 	{
 		if (_size != v1._size)
 			throw "Can not dif2 vector!";
 		vector dif;
 		dif._size = _size;
-		dif._data = new double[_size];
+		dif._data = new T[_size];
 		for (size_t i = 0; i < _size; i++)
 		{
 			dif._data[i] = _data[i] - v1._data[i];
@@ -97,11 +88,11 @@ public:
 		return dif;
 	};
 
-	T operator*(const vector& v1)
+	T operator*(const vector& v1) const
 	{
 		if (_size != v1._size)
 			throw "Can not mul2 vector!";
-		double mul = 0;
+		T mul = 0;
 		for (size_t i = 0; i < _size; i++)
 		{
 			mul += _data[i] * v1._data[i];
@@ -109,7 +100,7 @@ public:
 		return mul;
 	};
 
-	vector operator*(const T a)
+	vector operator*(const T a) const
 	{
 		vector res(_size, 0);
 		for (size_t i = 0; i < _size; i++)
@@ -119,7 +110,7 @@ public:
 		return res;
 	};
 
-	vector operator/(const T data)
+	vector operator/(const T data) const
 	{
 		if (data == 0)
 			throw("Error!");
@@ -131,18 +122,17 @@ public:
 		return res;
 	};
 
-	template<class T> friend istream& operator>> (istream& is, vector<T>& v)
+	friend istream& operator>> (istream& is, vector<T>& v)
 	{
-
 		cout << "Size: ";
 		is >> v._size;
-		v._data = new double[v._size];
+		v._data = new T[v._size];
 		for (size_t i = 0; i < v._size; i++)
 			is >> v._data[i];
 		return is;
 	};
 
-	template<class T> friend ostream& operator<< (ostream& os, const vector<T>& v)
+	friend ostream& operator<< (ostream& os, const vector<T>& v)
 	{
 		os << "[ ";
 		for (size_t i = 0; i < v._size; i++)
@@ -150,11 +140,19 @@ public:
 		os << "]" << endl;
 		return os;
 	};
-
 };
  
 int main()
 {
+	vector<int> a(5, 1);
+	vector<int> b(5, 6);
+	
+	cout << "a = " << a;
+	cout << "b = " << b;
+	
+	cout << "a + b = " << a + b;
+	cout << "a - b = " << a - b;
+	cout << "a * b = " << a * b;
 
-
+	return 0;
 }
